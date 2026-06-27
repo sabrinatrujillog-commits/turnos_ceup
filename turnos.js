@@ -689,7 +689,7 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 
 // ---------- Servidor ----------
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
-function asigBuses(){ if(!confirm('Asigna buses a todos los que ya tienen turno (orden: nota). ¿Continuar?'))return;
+function asigBuses(){
   setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(res){
     DATA=res.data;
     var map={}; res.asigs.forEach(function(a){ map[a.codigo]={busIda:a.busIda,busReg:a.busReg}; });
