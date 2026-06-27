@@ -334,7 +334,7 @@ var INDEX_HTML = `<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     @font-face { font-family:'Kaio'; src:url('kaio.otf') format('opentype'); font-weight:400 900; }
-    :root{ --amarillo:#FAC012; --azul:#0844A7; --teal:#022B3A; --naranja:#F17121; --verde:#11A154; --rojo:#E61E14; --crema:#F5EDD4; --azulclaro:#2568C8; }
+    :root{ --amarillo:#FAC012; --azul:#0844A7; --teal:#022B3A; --naranja:#F17121; --verde:#11A154; --rojo:#E61E14; --crema:#FAF4E4; --azulclaro:#2568C8; }
     *{ box-sizing:border-box; }
     body{ font-family:'Poppins',sans-serif; margin:0; color:var(--teal); background:var(--crema); }
     h1,h2,h3{ font-family:'Kaio',sans-serif; text-transform:uppercase; letter-spacing:.02em; margin:0; }
