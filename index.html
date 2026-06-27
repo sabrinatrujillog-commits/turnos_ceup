@@ -254,33 +254,73 @@ function asigBuses(){ if(!confirm('Asigna buses a todos los que ya tienen turno 
   setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).asignarBuses(); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
-  var byTurno={}, order=[];
+  // Agrupar slots por puesto
+  var puestos = {};
+  var puestoOrder = [];
+  (DATA.turnos||[]).forEach(function(t){
+    if(!puestos[t.puesto]){ puestos[t.puesto]=[]; puestoOrder.push(t.puesto); }
+    puestos[t.puesto].push(t);
+  });
+
+  // Mapa turno id -> personas asignadas
+  var porTurno = {};
   ROWS.forEach(function(r){
-    var t=r.turno||'Sin turno';
-    if(!byTurno[t]){byTurno[t]=[];order.push(t);}
-    byTurno[t].push(r);
+    if(r.turno){ if(!porTurno[r.turno]) porTurno[r.turno]=[]; porTurno[r.turno].push(r); }
   });
-  var style='<style>body{font-family:Arial,sans-serif;font-size:11pt}'+
-    'h2{background:#0844A7;color:#fff;padding:6px 10px;margin:18px 0 4px}'+
-    'table{border-collapse:collapse;width:100%}'+
-    'th{background:#022B3A;color:#fff;padding:6px 10px;text-align:left;font-size:10pt}'+
-    'td{padding:5px 10px;border-bottom:1px solid #ddd}'+
-    'tr:nth-child(even) td{background:#f4f8ff}</style>';
-  var html='<html><head><meta charset="utf-8">'+style+'</head><body>';
-  html+='<h1 style="color:#0844A7;font-size:16pt;margin-bottom:4px">Asignaciones WAVE</h1>';
-  order.forEach(function(turno){
-    var slot=slotById(turno);
-    var hora=slot?(slot.inicio+' – '+slot.fin):'';
-    html+='<h2>'+turno+(hora?' &nbsp;·&nbsp; <span style="font-weight:normal;font-size:10pt">'+hora+'</span>':'')+'</h2>';
-    html+='<table><tr><th>Nombre</th><th>Bus ida</th><th>Bus regreso</th></tr>';
-    byTurno[turno].forEach(function(r){
-      html+='<tr><td>'+r.nombre+'</td><td>'+(r.busIda||'–')+'</td><td>'+(r.busReg||'–')+'</td></tr>';
+
+  var style = '<style>'+
+    'body{font-family:Arial,sans-serif;font-size:10pt}'+
+    'table{border-collapse:collapse;width:100%;margin-bottom:20px}'+
+    'th,td{border:1px solid #ccc;padding:5px 8px;vertical-align:middle}'+
+    'th{background:#022B3A;color:#fff;font-size:9pt}'+
+    '.puesto{background:#0844A7;color:#fff;font-weight:bold;text-align:center;font-size:10pt}'+
+    '.hora{background:#f0f4ff;color:#022B3A;font-weight:600;white-space:nowrap}'+
+    'tr:nth-child(even) td:not(.puesto){background:#f9f9f9}'+
+    '</style>';
+
+  var html = '<html><head><meta charset="utf-8">'+style+'</head><body>';
+  html += '<h2 style="color:#0844A7;margin-bottom:16px">Asignaciones WAVE</h2>';
+  html += '<table>';
+  html += '<tr><th style="width:120px">Puesto</th><th style="width:130px">Hora</th><th>Nombre</th><th style="width:110px">Bus ida</th><th style="width:110px">Bus regreso</th></tr>';
+
+  puestoOrder.forEach(function(puesto){
+    var slots = puestos[puesto];
+    // Contar total de filas para el rowspan del puesto
+    var totalFilas = 0;
+    slots.forEach(function(t){ totalFilas += Math.max(t.necesarios||1, (porTurno[t.id]||[]).length||1); });
+
+    var firstSlot = true;
+    slots.forEach(function(t){
+      var personas = porTurno[t.id] || [];
+      var filas = Math.max(t.necesarios||1, personas.length||1);
+      for(var i=0; i<filas; i++){
+        html += '<tr>';
+        if(firstSlot && i===0){
+          html += '<td class="puesto" rowspan="'+totalFilas+'">'+puesto+'</td>';
+        }
+        if(i===0){
+          html += '<td class="hora" rowspan="'+filas+'">'+t.inicio+' – '+t.fin+'</td>';
+        }
+        var p = personas[i];
+        html += '<td>'+(p?p.nombre:'')+'</td>';
+        html += '<td>'+(p&&p.busIda?p.busIda:'')+'</td>';
+        html += '<td>'+(p&&p.busReg?p.busReg:'')+'</td>';
+        html += '</tr>';
+        if(i===0) firstSlot=false;
+      }
     });
-    html+='</table>';
   });
-  html+='</body></html>';
-  var blob=new Blob(['﻿'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.xls'; a.click(); URL.revokeObjectURL(a.href);
+
+  html += '</table></body></html>';
+
+  var blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'asignacion_wave.xls';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
 }
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 

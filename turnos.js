@@ -598,18 +598,73 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
-  var btn=document.querySelector('.b-dl');
-  if(btn){ btn.disabled=true; btn.textContent='Generando…'; }
-  google.script.run
-    .withSuccessHandler(function(url){
-      if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
-      setStatus('<a href="'+url+'" target="_blank" style="color:#fff;font-weight:700;text-decoration:underline">⬇ Clic aquí para descargar el Excel</a>');
-    })
-    .withFailureHandler(function(e){
-      if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
-      setStatus('<span style="color:#ffcccc">Error: '+(e&&e.message?e.message:String(e))+'</span>');
-    })
-    .generarExcel();
+  // Agrupar slots por puesto
+  var puestos = {};
+  var puestoOrder = [];
+  (DATA.turnos||[]).forEach(function(t){
+    if(!puestos[t.puesto]){ puestos[t.puesto]=[]; puestoOrder.push(t.puesto); }
+    puestos[t.puesto].push(t);
+  });
+
+  // Mapa turno id -> personas asignadas
+  var porTurno = {};
+  ROWS.forEach(function(r){
+    if(r.turno){ if(!porTurno[r.turno]) porTurno[r.turno]=[]; porTurno[r.turno].push(r); }
+  });
+
+  var style = '<style>'+
+    'body{font-family:Arial,sans-serif;font-size:10pt}'+
+    'table{border-collapse:collapse;width:100%;margin-bottom:20px}'+
+    'th,td{border:1px solid #ccc;padding:5px 8px;vertical-align:middle}'+
+    'th{background:#022B3A;color:#fff;font-size:9pt}'+
+    '.puesto{background:#0844A7;color:#fff;font-weight:bold;text-align:center;font-size:10pt}'+
+    '.hora{background:#f0f4ff;color:#022B3A;font-weight:600;white-space:nowrap}'+
+    'tr:nth-child(even) td:not(.puesto){background:#f9f9f9}'+
+    '</style>';
+
+  var html = '<html><head><meta charset="utf-8">'+style+'</head><body>';
+  html += '<h2 style="color:#0844A7;margin-bottom:16px">Asignaciones WAVE</h2>';
+  html += '<table>';
+  html += '<tr><th style="width:120px">Puesto</th><th style="width:130px">Hora</th><th>Nombre</th><th style="width:110px">Bus ida</th><th style="width:110px">Bus regreso</th></tr>';
+
+  puestoOrder.forEach(function(puesto){
+    var slots = puestos[puesto];
+    // Contar total de filas para el rowspan del puesto
+    var totalFilas = 0;
+    slots.forEach(function(t){ totalFilas += Math.max(t.necesarios||1, (porTurno[t.id]||[]).length||1); });
+
+    var firstSlot = true;
+    slots.forEach(function(t){
+      var personas = porTurno[t.id] || [];
+      var filas = Math.max(t.necesarios||1, personas.length||1);
+      for(var i=0; i<filas; i++){
+        html += '<tr>';
+        if(firstSlot && i===0){
+          html += '<td class="puesto" rowspan="'+totalFilas+'">'+puesto+'</td>';
+        }
+        if(i===0){
+          html += '<td class="hora" rowspan="'+filas+'">'+t.inicio+' – '+t.fin+'</td>';
+        }
+        var p = personas[i];
+        html += '<td>'+(p?p.nombre:'')+'</td>';
+        html += '<td>'+(p&&p.busIda?p.busIda:'')+'</td>';
+        html += '<td>'+(p&&p.busReg?p.busReg:'')+'</td>';
+        html += '</tr>';
+        if(i===0) firstSlot=false;
+      }
+    });
+  });
+
+  html += '</table></body></html>';
+
+  var blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'asignacion_wave.xls';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
 }
 function fail(e){ var msg='Error: '+(e&&e.message?e.message:String(e)); setStatus('<span style="color:red">'+msg+'</span>'); console.error(msg); }
 
