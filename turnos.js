@@ -246,6 +246,8 @@ function getData() {
 // ---------- Asignar buses ----------
 // Recibe rows del cliente (igual que guardarAsignacion) para no depender de headers de la hoja
 function asignarBuses(rows) {
+  try {
+  if(!rows||!rows.length) throw new Error('ROWS vacío — no hay datos en el cliente');
   var d = getData();
   var cfg = d.config;
 
@@ -333,6 +335,7 @@ function asignarBuses(rows) {
     asigs: rows.map(function(r){ return {codigo:r.codigo, busIda:r.busIda||'', busReg:r.busReg||''}; }),
     data: getData()
   };
+  } catch(e) { throw new Error('asignarBuses: '+e.message); }
 }
 
 function _escribir(rows) {
@@ -711,7 +714,7 @@ function downloadCSV(){
     })
     .generarExcel();
 }
-function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
+function fail(e){ var msg='Error: '+(e&&e.message?e.message:String(e)); setStatus('<span style="color:red">'+msg+'</span>'); console.error(msg); }
 
 load();
 </script>
