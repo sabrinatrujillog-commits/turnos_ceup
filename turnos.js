@@ -243,41 +243,6 @@ function getData() {
   };
 }
 
-    // BUS REGRESO: debe salir después del fin de turno; preferir el más cercano a su hora marcada
-    var busR = '';
-    if (finMin != null) {
-      var despues = busReg.filter(function(b){ return b.horaMin >= finMin && capReg[b.bus] < b.capacidad; });
-      if (despues.length) {
-        var bestBus = null;
-        if (salePref != null) {
-          var bestDiff = null;
-          despues.forEach(function(b){
-            var diff = Math.abs(b.horaMin - salePref);
-            if (bestDiff === null || diff < bestDiff){ bestDiff = diff; bestBus = b; }
-          });
-        }
-        if (!bestBus) bestBus = despues[0];
-        busR = bestBus.bus; capReg[busR]++;
-      } else {
-        for (var j = busReg.length - 1; j >= 0; j--) {
-          if (capReg[busReg[j].bus] < busReg[j].capacidad){ busR = busReg[j].bus; capReg[busR]++; break; }
-        }
-      }
-    }
-
-    rows[rowIdx[r.codigo]].busIda = busI;
-    rows[rowIdx[r.codigo]].busReg = busR;
-  });
-
-  var out = rows.map(function(r){ return [r.codigo, r.nombre, r.nota, r.llega, r.sale, r.turno, r.busIda||'', r.busReg||'', '', r.manual?'sí':'']; });
-  _escribir(out);
-  // Devuelve buses asignados + datos frescos para sincronizar cliente
-  return {
-    asigs: rows.map(function(r){ return {codigo:r.codigo, busIda:r.busIda||'', busReg:r.busReg||''}; }),
-    data: getData()
-  };
-  } catch(e) { throw new Error('asignarBuses: '+e.message); }
-}
 
 function _escribir(rows) {
   var HEADERS = [["Código","Nombre","Nota","Llega","Sale","Turno","Bus ida","Bus regreso","Alertas","Manual"]];
