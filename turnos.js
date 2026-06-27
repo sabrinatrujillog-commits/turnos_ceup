@@ -414,7 +414,7 @@ var INDEX_HTML = `<!DOCTYPE html>
   <div class="wrap">
     <div class="main" id="mainView"></div>
     <div class="side">
-      <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus</h3><div style="display:inline-flex;align-items:center;gap:4px;background:var(--crema);border:1.5px solid var(--teal);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--teal);margin-bottom:8px;"><i data-lucide="bus" style="width:11px;height:11px"></i> <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:11px;height:11px"></i> <b id="cfgMargen">–</b>m</div><div id="cupBuses" class="muted">–</div></div>
+      <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus</h3><div style="display:inline-flex;align-items:center;gap:4px;background:#e8f7ef;border:1.5px solid var(--verde);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--verde);margin-bottom:8px;"><i data-lucide="bus" style="width:11px;height:11px"></i> <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:11px;height:11px"></i> <b id="cfgMargen">–</b>m</div><div id="cupBuses" class="muted">–</div></div>
       <div class="card t-red"><h3><span class="emoji"><i data-lucide="alert-triangle" style="width:15px;height:15px;vertical-align:middle"></i></span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
     </div>
   </div>
