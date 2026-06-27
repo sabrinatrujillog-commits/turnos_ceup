@@ -40,7 +40,10 @@
     .main{ flex:1; min-width:0; }
     .side{ width:300px; flex-shrink:0; }
     .card{ background:#fff; border-radius:14px; box-shadow:0 4px 14px rgba(2,43,58,.12); padding:14px; margin-bottom:14px; border-top:6px solid var(--azul); }
-    .card.t-yel{ border-top-color:var(--amarillo); } .card.t-grn{ border-top-color:var(--verde); } .card.t-red{ border-top-color:var(--rojo); } .card.t-org{ border-top-color:var(--naranja); }
+    .card.t-yel{ border-top-color:var(--amarillo); background:#fffbee; }
+    .card.t-grn{ border-top-color:var(--verde); background:#f0faf4; }
+    .card.t-red{ border-top-color:var(--naranja); background:#fff7f0; }
+    .card.t-org{ border-top-color:var(--naranja); background:#fff7f0; }
     .card h3{ font-size:16px; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
     .card h3 small{ font-family:'Poppins'; font-weight:700; text-transform:none; color:var(--azul); font-size:12px; margin-left:auto; }
 
@@ -89,7 +92,7 @@
     <div class="main" id="mainView"></div>
     <div class="side">
       <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus</h3><div style="display:inline-flex;align-items:center;gap:4px;background:#e8f7ef;border:1.5px solid var(--verde);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--verde);margin-bottom:8px;"><i data-lucide="bus" style="width:11px;height:11px"></i> <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:11px;height:11px"></i> <b id="cfgMargen">–</b>m</div><div id="cupBuses" class="muted">–</div></div>
-      <div class="card t-red"><h3><span class="emoji"><i data-lucide="alert-triangle" style="width:15px;height:15px;vertical-align:middle"></i></span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
+      <div class="card t-org"><h3><span class="emoji"><i data-lucide="alert-triangle" style="width:15px;height:15px;vertical-align:middle"></i></span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
     </div>
   </div>
 
