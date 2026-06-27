@@ -313,6 +313,86 @@ function _escribir(rows) {
   if (rows.length) sh.getRange(2, 1, rows.length, 10).setValues(rows);
 }
 
+// Genera un .xlsx real en Drive y devuelve la URL de descarga
+function generarExcel() {
+  var d = getData();
+  var asig = d.asignacion; // [{Código,Nombre,Turno,'Bus ida','Bus regreso',...}]
+  var turnos = d.turnos;   // [{id, puesto, inicio, fin}]
+
+  // Agrupar por turno
+  var byTurno = {}, order = [];
+  asig.forEach(function(r) {
+    var t = r['Turno'] || 'Sin turno';
+    if (!byTurno[t]) { byTurno[t] = []; order.push(t); }
+    byTurno[t].push(r);
+  });
+
+  // Crear spreadsheet temporal
+  var ss2 = SpreadsheetApp.create('asignacion_wave_temp');
+  var sheet = ss2.getActiveSheet();
+  sheet.setName('Asignaciones');
+
+  var row = 1;
+  order.forEach(function(turno) {
+    // Encontrar hora del turno
+    var slot = turnos.filter(function(t){ return t.id === turno; })[0];
+    var header = turno + (slot ? '  ·  ' + slot.inicio + ' – ' + slot.fin : '');
+
+    // Fila de encabezado de turno
+    sheet.getRange(row, 1, 1, 3).merge()
+      .setValue(header)
+      .setBackground('#0844A7').setFontColor('#ffffff')
+      .setFontWeight('bold').setFontSize(11);
+    row++;
+
+    // Encabezados de columna
+    sheet.getRange(row, 1, 1, 3).setValues([['Nombre', 'Bus ida', 'Bus regreso']])
+      .setBackground('#022B3A').setFontColor('#ffffff').setFontWeight('bold');
+    row++;
+
+    // Datos
+    byTurno[turno].forEach(function(r, i) {
+      sheet.getRange(row, 1, 1, 3).setValues([[
+        r['Nombre'] || r['Código'] || '',
+        r['Bus ida'] || '–',
+        r['Bus regreso'] || '–'
+      ]]);
+      if (i % 2 === 1) sheet.getRange(row, 1, 1, 3).setBackground('#f4f8ff');
+      row++;
+    });
+
+    row++; // fila en blanco entre turnos
+  });
+
+  // Ajustar anchos de columna
+  sheet.setColumnWidth(1, 200);
+  sheet.setColumnWidth(2, 140);
+  sheet.setColumnWidth(3, 140);
+
+  var id = ss2.getId();
+  var url = 'https://docs.google.com/spreadsheets/d/' + id + '/export?format=xlsx&id=' + id;
+
+  // Borrar el archivo temporal de Drive después de 10 minutos
+  try {
+    var trigger = ScriptApp.newTrigger('_borrarTempExcel').timeBased().after(10 * 60 * 1000).create();
+    PropertiesService.getScriptProperties().setProperty('tempExcelId', id);
+    PropertiesService.getScriptProperties().setProperty('tempExcelTriggerId', trigger.getUniqueId());
+  } catch(e) {}
+
+  return url;
+}
+
+function _borrarTempExcel() {
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty('tempExcelId');
+  var triggerId = props.getProperty('tempExcelTriggerId');
+  if (id) { try { DriveApp.getFileById(id).setTrashed(true); } catch(e) {} props.deleteProperty('tempExcelId'); }
+  if (triggerId) {
+    ScriptApp.getProjectTriggers().forEach(function(t){ if(t.getUniqueId()===triggerId) ScriptApp.deleteTrigger(t); });
+    props.deleteProperty('tempExcelTriggerId');
+  }
+}
+
 // Guardar ediciones. rows = [{codigo,nombre,nota,llega,sale,turno,busIda,busReg,manual}]
 function guardarAsignacion(rows) {
   var out = rows.map(function (r) {
@@ -580,33 +660,18 @@ function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia
   setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
 function setStatus(s){ document.getElementById('status').textContent=s; }
 function downloadCSV(){
-  var byTurno={}, order=[];
-  ROWS.forEach(function(r){
-    var t=r.turno||'Sin turno';
-    if(!byTurno[t]){byTurno[t]=[];order.push(t);}
-    byTurno[t].push(r);
-  });
-  var style='<style>body{font-family:Arial,sans-serif;font-size:11pt}'+
-    'h2{background:#0844A7;color:#fff;padding:6px 10px;margin:18px 0 4px}'+
-    'table{border-collapse:collapse;width:100%}'+
-    'th{background:#022B3A;color:#fff;padding:6px 10px;text-align:left;font-size:10pt}'+
-    'td{padding:5px 10px;border-bottom:1px solid #ddd}'+
-    'tr:nth-child(even) td{background:#f4f8ff}</style>';
-  var html='<html><head><meta charset="utf-8">'+style+'</head><body>';
-  html+='<h1 style="color:#0844A7;font-size:16pt;margin-bottom:4px">Asignaciones WAVE</h1>';
-  order.forEach(function(turno){
-    var slot=slotById(turno);
-    var hora=slot?(slot.inicio+' – '+slot.fin):'';
-    html+='<h2>'+turno+(hora?' &nbsp;·&nbsp; <span style="font-weight:normal;font-size:10pt">'+hora+'</span>':'')+'</h2>';
-    html+='<table><tr><th>Nombre</th><th>Bus ida</th><th>Bus regreso</th></tr>';
-    byTurno[turno].forEach(function(r){
-      html+='<tr><td>'+r.nombre+'</td><td>'+(r.busIda||'–')+'</td><td>'+(r.busReg||'–')+'</td></tr>';
-    });
-    html+='</table>';
-  });
-  html+='</body></html>';
-  var blob=new Blob(['﻿'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.xls'; a.click(); URL.revokeObjectURL(a.href);
+  var btn=document.querySelector('.b-dl');
+  if(btn){ btn.disabled=true; btn.textContent='Generando…'; }
+  google.script.run
+    .withSuccessHandler(function(url){
+      if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
+      window.open(url,'_blank');
+    })
+    .withFailureHandler(function(e){
+      if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
+      alert('Error al generar Excel: '+(e&&e.message?e.message:e));
+    })
+    .generarExcel();
 }
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
