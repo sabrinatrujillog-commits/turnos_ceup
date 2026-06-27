@@ -341,7 +341,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .banner{ width:100%; display:block; }
     .bunting2{ display:none; }
 
-    .bar{ display:flex; gap:10px; align-items:center; padding:12px 18px; background:#8a0808; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 2px 12px rgba(15,45,107,0.15); border-bottom:none; flex-wrap:wrap; }
+    .bar{ display:flex; gap:10px; align-items:center; padding:12px 18px; background:#ad0a0a; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 2px 12px rgba(15,45,107,0.15); border-bottom:none; flex-wrap:wrap; }
     .bar button{ background:rgba(255,255,255,0.15) !important; border:1px solid rgba(255,255,255,0.35) !important; color:#fff !important; box-shadow:none; }
     .bar button:hover{ background:rgba(255,255,255,0.25) !important; }
     .bar *{ color:#fff !important; }
