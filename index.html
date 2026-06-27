@@ -281,8 +281,8 @@ function downloadCSV(){
     html+='</table>';
   });
   html+='</body></html>';
-  var blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.xls'; a.click();
+  var blob=new Blob(['﻿'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.xls'; a.click(); URL.revokeObjectURL(a.href);
 }
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
