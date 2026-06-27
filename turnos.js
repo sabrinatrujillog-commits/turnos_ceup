@@ -366,10 +366,10 @@ var INDEX_HTML = `<!DOCTYPE html>
     .main{ flex:1; min-width:0; }
     .side{ width:300px; flex-shrink:0; }
     .card{ background:#fff; border-radius:14px; box-shadow:0 4px 14px rgba(2,43,58,.12); padding:14px; margin-bottom:14px; border-top:6px solid var(--azul); border:1px solid rgba(2,43,58,.1); border-top:6px solid var(--azul); }
-    .card.t-yel{ border-top-color:var(--amarillo); background:#fffbee; }
-    .card.t-grn{ border-top-color:var(--verde); background:#f0faf4; }
-    .card.t-red{ border-top-color:var(--naranja); background:#fff7f0; }
-    .card.t-org{ border-top-color:var(--naranja); background:#fff7f0; }
+    .card.t-yel{ border-color:var(--amarillo); border-top-color:var(--amarillo); background:#fffbee; }
+    .card.t-grn{ border-color:var(--verde); border-top-color:var(--verde); background:#f0faf4; }
+    .card.t-red{ border-color:var(--naranja); border-top-color:var(--naranja); background:#fff7f0; }
+    .card.t-org{ border-color:var(--naranja); border-top-color:var(--naranja); background:#fff7f0; }
     .card h3{ font-size:16px; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
     .card h3 small{ font-family:'Poppins'; font-weight:700; text-transform:none; color:var(--azul); font-size:12px; margin-left:auto; }
 
