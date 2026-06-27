@@ -657,14 +657,12 @@ function downloadCSV(){
 
   html += '</table></body></html>';
 
-  var blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8'});
   var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html);
   a.download = 'asignacion_wave.xls';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(a.href);
 }
 function fail(e){ var msg='Error: '+(e&&e.message?e.message:String(e)); setStatus('<span style="color:red">'+msg+'</span>'); console.error(msg); }
 
