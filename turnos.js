@@ -473,10 +473,13 @@ function rowBy(cod){ return ROWS.filter(function(r){return r.codigo===cod;})[0];
 function nameOf(r){ return r.nombre ? r.nombre : r.codigo; }
 
 function load(){ setStatus('Cargando…');
-  google.script.run.withSuccessHandler(function(d){ DATA=d;
-    document.getElementById('cfgViaje').textContent=d.config.viaje;
-    document.getElementById('cfgMargen').textContent=d.config.margen;
-    buildRows(); render(); setStatus('Datos cargados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
+  google.script.run.withSuccessHandler(function(d){ 
+    try {
+      DATA=d;
+      document.getElementById('cfgViaje').textContent=d.config.viaje;
+      document.getElementById('cfgMargen').textContent=d.config.margen;
+      buildRows(); render(); setStatus('Datos cargados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
+    } catch(e){ setStatus('<span style="color:red">ERROR JS: '+e.message+'</span>'); }
   }).withFailureHandler(fail).getData(); }
 
 // Base = quienes van a Wave; overlay = lo guardado en ASIGNACION (por código)
