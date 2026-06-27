@@ -403,6 +403,8 @@ var INDEX_HTML = `<!DOCTYPE html>
     .muted{ color:#6b7a82; font-size:12px; }
     .cup-line{ display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12.5px; }
     .alert-item{ font-size:12px; padding:8px 10px; border-radius:10px; margin-bottom:7px; }
+    .alert-item.err{ background:#ffe5d0; color:#b84000; }
+    .alert-item.warn{ background:#fff3c0; color:#a07800; }
     .emoji{ font-size:18px; }
   </style>
 <script src="https://unpkg.com/lucide@latest"></script>
