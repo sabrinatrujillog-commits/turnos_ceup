@@ -254,7 +254,7 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
 function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia automática (orden: nota → preferencia). ¿Continuar?'))return;
   setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
-function setStatus(s){ document.getElementById('status').textContent=s; }
+function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
   var byTurno={}, order=[];
   ROWS.forEach(function(r){
