@@ -400,6 +400,10 @@ var INDEX_HTML = `<!DOCTYPE html>
     .card.t-bus h3{ color:#FAC012 !important; }
     .card.t-bus .pchip{ color:var(--teal); border-color:#FAC012; background:#fff; }
     .card.t-bus .pchip .x{ background:rgba(250,192,18,0.25); color:#FAC012; }
+    .card.t-bus .pchip.warn{ border-color:var(--rojo); }
+    .card.t-bus .pchip.warn .x{ background:rgba(230,30,20,0.15); color:var(--rojo); }
+    .card.t-bus .pchip.err{ background:#ffe0dd; border-color:var(--rojo); }
+    .card.t-bus .pchip.err .x{ background:rgba(230,30,20,0.15); color:var(--rojo); }
     .card.t-bus .addsel{ color:#FAC012; border-color:#FAC012; }
     .card h3{ font-size:16px; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
     .card h3 small{ font-family:'Poppins'; font-weight:700; text-transform:none; color:var(--azul); font-size:12px; margin-left:auto; }
