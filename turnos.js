@@ -334,7 +334,7 @@ var INDEX_HTML = `<!DOCTYPE html>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     @font-face { font-family:'Kaio'; src:url('kaio.otf') format('opentype'); font-weight:400 900; }
-    :root{ --amarillo:#FAC012; --azul:#0844A7; --teal:#022B3A; --naranja:#F17121; --verde:#11A154; --rojo:#E61E14; --crema:#FDFAF3; --azulclaro:#2568C8; }
+    :root{ --amarillo:#FAC012; --azul:#0844A7; --teal:#022B3A; --naranja:#F17121; --verde:#11A154; --rojo:#E61E14; --crema:#FAF3E0; --azulclaro:#2568C8; }
     *{ box-sizing:border-box; }
     body{ font-family:'Poppins',sans-serif; margin:0; color:var(--teal); background:var(--crema); }
     h1,h2,h3{ font-family:'Kaio',sans-serif; text-transform:uppercase; letter-spacing:.02em; margin:0; }
@@ -368,8 +368,8 @@ var INDEX_HTML = `<!DOCTYPE html>
     .card{ background:#fff; border-radius:14px; box-shadow:0 4px 14px rgba(2,43,58,.12); padding:14px; margin-bottom:14px; border-top:6px solid var(--azul); border:1px solid rgba(2,43,58,.1); border-top:6px solid var(--azul); }
     .card.t-yel{ border-color:var(--amarillo); border-top-color:var(--amarillo); background:#fffbee; }
     .card.t-grn{ border-color:var(--verde); border-top-color:var(--verde); background:#f0faf4; }
-    .card.t-red{ border-color:var(--naranja); border-top-color:var(--naranja); background:#fff7f0; }
-    .card.t-org{ border-color:var(--naranja); border-top-color:var(--naranja); background:#fff7f0; }
+    .card.t-red{ border-color:var(--naranja); border-top-color:var(--naranja); background:#ffe8d6; }
+    .card.t-org{ border-color:var(--naranja); border-top-color:var(--naranja); background:#ffe8d6; }
     .card h3{ font-size:16px; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
     .card h3 small{ font-family:'Poppins'; font-weight:700; text-transform:none; color:var(--azul); font-size:12px; margin-left:auto; }
 
