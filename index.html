@@ -66,6 +66,7 @@
     .alert-item{ font-size:12px; padding:8px 10px; border-radius:10px; margin-bottom:7px; }
     .emoji{ font-size:18px; }
   </style>
+<script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <img class="banner" src="banner.png" alt="WAVE">
@@ -73,22 +74,22 @@
 
   <div class="bar">
     <div class="tabs">
-      <button id="tabTurnos" class="tab active" onclick="setView('turnos')">🗂️ Turnos</button>
-      <button id="tabBuses" class="tab" onclick="setView('buses')">🚌 Buses</button>
+      <button id="tabTurnos" class="tab active" onclick="setView('turnos')"><i data-lucide="folder-open" style="width:15px;height:15px;vertical-align:middle"></i> Turnos</button>
+      <button id="tabBuses" class="tab" onclick="setView('buses')"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Buses</button>
     </div>
     <div class="sep"></div>
-    <button class="b-auto" onclick="auto()">⚡ Auto-sugerir</button>
-    <button class="b-save" onclick="save()">💾 Guardar</button>
+    <button class="b-auto" onclick="auto()"><i data-lucide="zap" style="width:15px;height:15px;vertical-align:middle"></i> Auto-sugerir</button>
+    <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
-    <span class="chip">🚌 Viaje <b id="cfgViaje">–</b>m · ⏱ Margen <b id="cfgMargen">–</b>m</span>
+    <span class="chip"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Viaje <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:15px;height:15px;vertical-align:middle"></i> Margen <b id="cfgMargen">–</b>m</span>
     <span id="status" style="margin-left:auto"></span>
   </div>
 
   <div class="wrap">
     <div class="main" id="mainView"></div>
     <div class="side">
-      <div class="card t-grn"><h3><span class="emoji">🚌</span> Cupos por bus</h3><div id="cupBuses" class="muted">–</div></div>
-      <div class="card t-red"><h3><span class="emoji">⚠️</span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
+      <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus</h3><div id="cupBuses" class="muted">–</div></div>
+      <div class="card t-red"><h3><span class="emoji"><i data-lucide="alert-triangle" style="width:15px;height:15px;vertical-align:middle"></i></span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
     </div>
   </div>
 
@@ -107,7 +108,7 @@ function load(){ setStatus('Cargando…');
   google.script.run.withSuccessHandler(function(d){ DATA=d;
     document.getElementById('cfgViaje').textContent=d.config.viaje;
     document.getElementById('cfgMargen').textContent=d.config.margen;
-    buildRows(); render(); setStatus('Datos cargados ✔');
+    buildRows(); render(); setStatus('Datos cargados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
   }).withFailureHandler(fail).getData(); }
 
 // Base = quienes van a Wave; overlay = lo guardado en ASIGNACION (por código)
@@ -132,7 +133,7 @@ function validate(){ var byP={},list=[],turnoCount={},busCount={};
     if(!r.turno)a.push({t:'warn',m:'sin turno'});
     if(r.turno&&!r.busIda)a.push({t:'warn',m:'sin bus ida'});
     if(r.nota==null||r.nota==='')a.push({t:'warn',m:'sin nota'});
-    if(t&&bi&&t.iniMin!=null&&bi.horaMin!=null){ if(bi.horaMin+DATA.config.viaje+DATA.config.margen>t.iniMin)a.push({t:'err',m:'🚌 llega tarde al turno'}); }
+    if(t&&bi&&t.iniMin!=null&&bi.horaMin!=null){ if(bi.horaMin+DATA.config.viaje+DATA.config.margen>t.iniMin)a.push({t:'err',m:'<i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> llega tarde al turno'}); }
     if(t&&br&&t.finMin!=null&&br.horaMin!=null&&br.horaMin<t.finMin)a.push({t:'err',m:'regreso antes de terminar'});
     var lp=parseMin(r.llega),sp=parseMin(r.sale);
     if(t&&lp!=null&&t.iniMin!=null&&lp>t.iniMin)a.push({t:'warn',m:'llega tras inicio'});
@@ -162,11 +163,11 @@ function renderTurnos(al){
   // agrupar slots por puesto, manteniendo orden
   var order=[], groups={};
   (DATA.turnos||[]).forEach(function(t){ if(!groups[t.puesto]){groups[t.puesto]=[];order.push(t.puesto);} groups[t.puesto].push(t); });
-  if(!order.length) return '<div class="card t-yel"><h3>🗂️ Turnos</h3><div class="muted">No hay turnos. Llena la hoja <b>CAT_TURNOS</b> y recarga.</div></div>';
+  if(!order.length) return '<div class="card t-yel"><h3><i data-lucide="folder-open" style="width:15px;height:15px;vertical-align:middle"></i> Turnos</h3><div class="muted">No hay turnos. Llena la hoja <b>CAT_TURNOS</b> y recarga.</div></div>';
   var html='';
   order.forEach(function(puesto){
     var enc=groups[puesto][0].encargado;
-    html+='<div class="card t-yel"><h3><span class="emoji">🥅</span> '+puesto+(enc?' <small>👤 '+enc+'</small>':'')+'</h3>';
+    html+='<div class="card t-yel"><h3><span class="emoji"><i data-lucide="clipboard-list" style="width:15px;height:15px;vertical-align:middle"></i></span> '+puesto+(enc?' <small><i data-lucide="user" style="width:15px;height:15px;vertical-align:middle"></i> '+enc+'</small>':'')+'</h3>';
     groups[puesto].forEach(function(t){
       var asign=ROWS.filter(function(r){return r.turno===t.id;});
       var c=asign.length, col=c>t.necesarios?'b-err':(c===t.necesarios?'b-ok':'b-warn');
@@ -192,9 +193,9 @@ function renderBuses(al){
       h+=availSelect(function(r){return !r[field];}, "assignBus('"+b.bus.replace(/'/g,"\\\\'")+"','"+field+"',this.value)");
       h+='</div></div>'; });
     return h; }
-  var html='<div class="card t-org"><h3><span class="emoji">➡️</span> Buses de ida</h3>'+
+  var html='<div class="card t-org"><h3><span class="emoji"><i data-lucide="arrow-right" style="width:15px;height:15px;vertical-align:middle"></i></span> Buses de ida</h3>'+
     (ida.length?block(ida,'busIda'):'<div class="muted">Sin buses de ida en CAT_BUSES.</div>')+'</div>';
-  html+='<div class="card t-grn"><h3><span class="emoji">⬅️</span> Buses de regreso</h3>'+
+  html+='<div class="card t-grn"><h3><span class="emoji"><i data-lucide="arrow-left" style="width:15px;height:15px;vertical-align:middle"></i></span> Buses de regreso</h3>'+
     (reg.length?block(reg,'busReg'):'<div class="muted">Sin buses de regreso en CAT_BUSES.</div>')+'</div>';
   return html;
 }
@@ -211,11 +212,11 @@ function renderCupos(al){
     return '<div class="cup-line"><span class="pill '+col+'">'+c+'/'+b.capacidad+'</span> <span>'+b.bus+'</span> <span class="muted">'+b.tipo+' '+b.hora+'</span></div>'; }).join('');
   document.getElementById('cupBuses').innerHTML=hb||'Sin buses en CAT_BUSES.'; }
 function renderAlerts(al){ document.getElementById('nalerts').textContent=al.list.length; var box=document.getElementById('alerts');
-  if(!al.list.length){ box.innerHTML='<span class="ok pill">¡Todo en orden! ✔</span>'; return; }
+  if(!al.list.length){ box.innerHTML='<span class="ok pill">¡Todo en orden! <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i></span>'; return; }
   box.innerHTML=al.list.map(function(x){ var who=x.nombre?('<b>'+x.nombre+'</b>: '):''; return '<div class="alert-item '+x.t+'">'+who+x.m+'</div>'; }).join(''); }
 
 // ---------- Servidor ----------
-function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado ✔'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
+function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
 function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia automática (orden: nota → preferencia). ¿Continuar?'))return;
   setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
 function setStatus(s){ document.getElementById('status').textContent=s; }
@@ -223,5 +224,6 @@ function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
 load();
 </script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
