@@ -346,8 +346,11 @@ function asignarBuses() {
 }
 
 function _escribir(rows) {
+  var HEADERS = [["Código","Nombre","Nota","Llega","Sale","Turno","Bus ida","Bus regreso","Alertas","Manual"]];
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName(SH.ASIG) || ss.insertSheet(SH.ASIG);
+  var r1 = sh.getLastRow() === 0 ? '' : String(sh.getRange(1,1).getValue()).trim();
+  if (!r1) sh.getRange(1,1,1,10).setValues(HEADERS);
   var last = sh.getLastRow();
   if (last > 1) sh.getRange(2, 1, last - 1, 10).clearContent();
   if (rows.length) sh.getRange(2, 1, rows.length, 10).setValues(rows);
