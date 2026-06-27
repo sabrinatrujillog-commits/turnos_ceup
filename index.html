@@ -23,7 +23,7 @@
     button{ font-family:'Poppins',sans-serif; font-weight:800; color:#fff; border:0; padding:10px 16px; border-radius:30px; cursor:pointer; font-size:13px; box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .05s, filter .15s; text-transform:uppercase; letter-spacing:.03em; }
     button:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
     button:hover{ filter:brightness(1.06); }
-    .b-auto{ background:linear-gradient(135deg,var(--naranja),var(--amarillo)); color:var(--teal); }
+    .b-bus{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); color:#fff; }
     .b-save{ background:linear-gradient(135deg,var(--verde),#0e8a45); }
     .b-reload{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); }
     .b-dl{ background:linear-gradient(135deg,#2d7a4f,#11A154); }
@@ -95,7 +95,7 @@
       <button id="tabBuses" class="tab" onclick="setView('buses')"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Buses</button>
     </div>
     <div class="sep"></div>
-    <button class="b-auto" onclick="auto()"><i data-lucide="zap" style="width:15px;height:15px;vertical-align:middle"></i> Auto-sugerir</button>
+    <button class="b-bus" onclick="asigBuses()"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Asignar buses</button>
     <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
     <button class="b-dl" onclick="downloadCSV()"><i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar</button>
@@ -252,8 +252,8 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 
 // ---------- Servidor ----------
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
-function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia automática (orden: nota → preferencia). ¿Continuar?'))return;
-  setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
+function asigBuses(){ if(!confirm('Asigna buses a todos los que ya tienen turno (orden: nota). ¿Continuar?'))return;
+  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).asignarBuses(); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
   var byTurno={}, order=[];
