@@ -174,6 +174,24 @@ function availSelect(filterFn, onchangeCall){
 }
 function chip(r,al,onx){ var s=sev(al.byP,r.codigo); return '<span class="pchip '+s+'" title="'+tip(al.byP,r.codigo)+'">'+nameOf(r)+'<span class="x" onclick="'+onx+'">✕</span></span>'; }
 
+function puestoIcon(nombre){
+  var n=(nombre||'').toLowerCase();
+  if(/t.?pic|botiq|enfermer|salud/.test(n)) return 'heart-pulse';
+  if(/escaneo|scan|qr|puerta|entrada/.test(n)) return 'scan-line';
+  if(/mozo|box|caja|mesa/.test(n)) return 'package';
+  if(/guardarropa|vest|ropa/.test(n)) return 'archive';
+  if(/vip|acceso|acred/.test(n)) return 'star';
+  if(/barra|bar|bebida/.test(n)) return 'wine';
+  if(/limpieza|aseo/.test(n)) return 'sparkles';
+  if(/seguridad|control/.test(n)) return 'shield';
+  if(/foto|camara/.test(n)) return 'camera';
+  if(/sonido|audio|dj/.test(n)) return 'music';
+  return 'clipboard-list';
+}
+function busIcon(tipo){
+  return tipo==='ida' ? 'arrow-right' : 'arrow-left';
+}
+
 function renderTurnos(al){
   // agrupar slots por puesto, manteniendo orden
   var order=[], groups={};
@@ -182,7 +200,7 @@ function renderTurnos(al){
   var html='';
   order.forEach(function(puesto){
     var enc=groups[puesto][0].encargado;
-    html+='<div class="card t-yel"><h3><span class="emoji"><i data-lucide="clipboard-list" style="width:15px;height:15px;vertical-align:middle"></i></span> '+puesto+(enc?' <small><i data-lucide="user" style="width:15px;height:15px;vertical-align:middle"></i> '+enc+'</small>':'')+'</h3>';
+    html+='<div class="card t-yel"><h3><i data-lucide="'+puestoIcon(puesto)+'" style="width:15px;height:15px;vertical-align:middle"></i> '+puesto+(enc?' <small><i data-lucide="user" style="width:15px;height:15px;vertical-align:middle"></i> '+enc+'</small>':'')+'</h3>';
     groups[puesto].forEach(function(t){
       var asign=ROWS.filter(function(r){return r.turno===t.id;});
       var c=asign.length, col=c>t.necesarios?'b-err':(c===t.necesarios?'b-ok':'b-warn');
@@ -203,7 +221,7 @@ function renderBuses(al){
   function block(list,field){ var h='';
     list.forEach(function(b){ var asign=ROWS.filter(function(r){return r[field]===b.bus;});
       var c=asign.length, col=c>b.capacidad?'b-err':'b-ok';
-      h+='<div class="slot"><div class="hora">'+b.bus+' · '+b.hora+'</div><div class="badge '+col+'">'+c+'/'+b.capacidad+'</div><div class="people">';
+      h+='<div class="slot"><div class="hora"><i data-lucide="'+busIcon(b.tipo)+'" style="width:12px;height:12px;vertical-align:middle"></i> '+b.bus+' · '+b.hora+'</div><div class="badge '+col+'">'+c+'/'+b.capacidad+'</div><div class="people">';
       asign.forEach(function(r){ h+=chip(r,al,"removeBus('"+r.codigo+"','"+field+"')"); });
       h+=availSelect(function(r){return !r[field];}, "assignBus('"+b.bus.replace(/'/g,"\\\\'")+"','"+field+"',this.value)");
       h+='</div></div>'; });
