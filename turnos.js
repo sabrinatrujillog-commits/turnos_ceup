@@ -383,7 +383,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .slot .hora{ width:140px; flex-shrink:0; font-weight:700; font-size:12.5px; color:var(--teal); }
     .slot .badge{ flex-shrink:0; }
     .slot .people{ flex:1; display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
-    .pchip{ display:inline-flex; align-items:center; gap:6px; background:#eef4ff; border:1.5px solid var(--azul); color:var(--teal); border-radius:16px; padding:3px 6px 3px 10px; font-size:12px; font-weight:700; }
+    .pchip{ display:inline-flex; align-items:center; gap:6px; background:#eef4ff; border:1.5px solid var(--azul); color:var(--azul); border-radius:16px; padding:3px 6px 3px 10px; font-size:12px; font-weight:700; }
     .pchip.warn{ background:#fff4d6; border-color:var(--amarillo); }
     .pchip.err{ background:#ffe0dd; border-color:var(--rojo); }
     .pchip .x{ cursor:pointer; background:rgba(0,0,0,.12); border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; line-height:1; }
