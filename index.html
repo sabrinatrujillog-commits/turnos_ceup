@@ -176,10 +176,10 @@ function chip(r,al,onx){ var s=sev(al.byP,r.codigo); return '<span class="pchip 
 
 function puestoIcon(nombre){
   var n=(nombre||'').toLowerCase();
-  if(/t.?pic|botiq|enfermer|salud/.test(n)) return 'heart-pulse';
+  if(/t.?pic|botiq|enfermer|salud/.test(n)) return 'cross';
   if(/escaneo|scan|qr|puerta|entrada/.test(n)) return 'scan-line';
-  if(/mozo|box|caja|mesa/.test(n)) return 'package';
-  if(/guardarropa|vest|ropa/.test(n)) return 'archive';
+  if(/mozo|box|caja|mesa/.test(n)) return 'wine';
+  if(/guardarropa|vest|ropa/.test(n)) return 'shirt';
   if(/vip|acceso|acred/.test(n)) return 'star';
   if(/barra|bar|bebida/.test(n)) return 'wine';
   if(/limpieza|aseo/.test(n)) return 'sparkles';
