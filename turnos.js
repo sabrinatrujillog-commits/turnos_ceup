@@ -507,7 +507,7 @@ function validate(){ var byP={},list=[],turnoCount={},busCount={};
   return {byP:byP,list:list,turnoCount:turnoCount,busCount:busCount}; }
 
 function sev(byP,cod){ var a=byP[cod]||[]; if(a.some(function(x){return x.t==='err';}))return 'err'; if(a.length)return 'warn'; return ''; }
-function tip(byP,cod){ var a=byP[cod]||[]; return a.map(function(x){return x.m;}).join(' · '); }
+function tip(byP,cod){ var a=byP[cod]||[]; return a.map(function(x){return x.m.replace(/<[^>]*>/g,'');}).join(' · '); }
 
 // ---------- Render principal ----------
 function render(){ var al=validate();
