@@ -108,8 +108,11 @@ function _sheetObjects(name) {
   for (var i = 1; i < values.length; i++) {
     var row = {}, hasData = false;
     for (var j = 0; j < headers.length; j++) {
-      row[headers[j]] = values[i][j];
-      if (values[i][j] !== '' && values[i][j] != null) hasData = true;
+      var v = values[i][j];
+      // Convertir Date a string para que sea serializable por google.script.run
+      if (v instanceof Date) v = Utilities.formatDate(v, Session.getScriptTimeZone(), 'h:mm a');
+      row[headers[j]] = v;
+      if (v !== '' && v != null) hasData = true;
     }
     if (hasData) out.push(row);
   }
