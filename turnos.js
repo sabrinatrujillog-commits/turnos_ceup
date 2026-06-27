@@ -394,7 +394,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .section-title{ font-family:'Kaio'; text-transform:uppercase; color:var(--azul); font-size:14px; margin:6px 0 4px; letter-spacing:.04em; }
 
     .pill{ display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:12px; margin:1px 0; }
-    .err{ background:#ffd0cc; color:#a30c04; } .warn{ background:#ffe9a8; color:#8a5b00; } .ok{ background:#cdeed4; color:#0a7a2b; }
+    .err{ background:#ffd0cc; color:#a30c04; } .warn{ background:#ffe9a8; color:#8a5b00; } .ok{ background:#fff3c0; color:#a07800; }
     .muted{ color:#6b7a82; font-size:12px; }
     .cup-line{ display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12.5px; }
     .alert-item{ font-size:12px; padding:8px 10px; border-radius:10px; margin-bottom:7px; }
