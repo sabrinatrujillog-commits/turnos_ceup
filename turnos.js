@@ -610,6 +610,10 @@ function downloadCSV(){
     puestos[t.puesto].push(t);
   });
 
+  // Mapa bus nombre -> hora
+  var busHora = {};
+  (DATA.buses||[]).forEach(function(b){ busHora[b.bus]=b.hora; });
+
   // Mapa turno id -> personas asignadas
   var porTurno = {};
   ROWS.forEach(function(r){
@@ -651,8 +655,8 @@ function downloadCSV(){
         }
         var p = personas[i];
         html += '<td>'+(p?p.nombre:'')+'</td>';
-        html += '<td>'+(p&&p.busIda?p.busIda:'')+'</td>';
-        html += '<td>'+(p&&p.busReg?p.busReg:'')+'</td>';
+        html += '<td>'+(p&&p.busIda?(busHora[p.busIda]||p.busIda):'')+'</td>';
+        html += '<td>'+(p&&p.busReg?(busHora[p.busReg]||p.busReg):'')+'</td>';
         html += '</tr>';
         if(i===0) firstSlot=false;
       }
