@@ -341,9 +341,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .banner{ width:100%; display:block; }
     .bunting2{ display:none; }
 
-    .bar{ display:flex; gap:10px; align-items:center; padding:12px 18px; background:rgba(2,43,58,0.75); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:3px solid var(--amarillo); flex-wrap:wrap; position:relative; overflow:hidden; }
-    .bar::before{ content:''; position:absolute; inset:0; background: radial-gradient(ellipse at 30% 50%, rgba(250,192,18,0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(17,161,84,0.3) 0%, transparent 60%), radial-gradient(ellipse at 50% 80%, rgba(241,113,33,0.25) 0%, transparent 60%); filter:blur(18px); z-index:0; pointer-events:none; }
-    .bar > *{ position:relative; z-index:1; }
+    .bar{ display:flex; gap:10px; align-items:center; padding:12px 18px; background:rgba(2,43,58,0.6); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:3px solid var(--amarillo); flex-wrap:wrap; }
     button{ font-family:'Poppins',sans-serif; font-weight:800; color:#fff; border:0; padding:10px 16px; border-radius:30px; cursor:pointer; font-size:13px; box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .05s, filter .15s; text-transform:uppercase; letter-spacing:.03em; }
     button:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
     button:hover{ filter:brightness(1.06); }
