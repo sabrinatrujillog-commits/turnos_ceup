@@ -225,7 +225,42 @@ function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia
 function setStatus(s){ document.getElementById('status').textContent=s; }
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
-load();
+// Datos de ejemplo para preview
+DATA = {
+  config: { viaje: 90, margen: 30 },
+  participantes: [
+    { codigo:'U001', nombre:'Ana García', nota:18, vaWave:true, llega:'9:00 PM', sale:'3:00 AM' },
+    { codigo:'U002', nombre:'Lucía Pérez', nota:17, vaWave:true, llega:'9:30 PM', sale:'4:00 AM' },
+    { codigo:'U003', nombre:'Martín López', nota:16, vaWave:true, llega:'10:00 PM', sale:'3:30 AM' },
+    { codigo:'U004', nombre:'Sofía Torres', nota:15, vaWave:true, llega:'9:00 PM', sale:'5:00 AM' },
+    { codigo:'U005', nombre:'Diego Ramírez', nota:14, vaWave:true, llega:'10:30 PM', sale:'2:30 AM' },
+    { codigo:'U006', nombre:'Valentina Cruz', nota:13, vaWave:true, llega:'9:00 PM', sale:'4:00 AM' },
+  ],
+  turnos: [
+    { id:'Escaneo Puerta 9:30 PM-10:00 PM', puesto:'Escaneo Puerta', iniMin:21*60+30, finMin:22*60, inicio:'9:30 PM', fin:'10:00 PM', necesarios:2, encargado:'' },
+    { id:'Mozo boxes 9:30 PM-10:00 PM', puesto:'Mozo boxes', iniMin:21*60+30, finMin:22*60, inicio:'9:30 PM', fin:'10:00 PM', necesarios:2, encargado:'Angela Navarrete' },
+    { id:'Guardarropa 10:30 PM-11:00 PM', puesto:'Guardarropa', iniMin:22*60+30, finMin:23*60, inicio:'10:30 PM', fin:'11:00 PM', necesarios:2, encargado:'Alejandra Florez' },
+    { id:'Tópico 12:00 AM-1:00 AM', puesto:'Tópico', iniMin:24*60, finMin:25*60, inicio:'12:00 AM', fin:'1:00 AM', necesarios:2, encargado:'Rossana Alvarado' },
+  ],
+  buses: [
+    { bus:'Bus 1', tipo:'ida', hora:'8:00 PM', capacidad:49, horaMin:20*60 },
+    { bus:'Bus 2', tipo:'ida', hora:'8:30 PM', capacidad:49, horaMin:20*60+30 },
+    { bus:'Bus R1', tipo:'regreso', hora:'2:30 AM', capacidad:49, horaMin:26*60+30 },
+    { bus:'Bus R2', tipo:'regreso', hora:'5:00 AM', capacidad:49, horaMin:29*60 },
+  ],
+  asignacion: [
+    { 'Código':'U001', 'Turno':'Escaneo Puerta 9:30 PM-10:00 PM', 'Bus ida':'Bus 1', 'Bus regreso':'Bus R1', 'Manual':'' },
+    { 'Código':'U002', 'Turno':'Mozo boxes 9:30 PM-10:00 PM', 'Bus ida':'Bus 1', 'Bus regreso':'Bus R1', 'Manual':'' },
+    { 'Código':'U003', 'Turno':'Guardarropa 10:30 PM-11:00 PM', 'Bus ida':'Bus 2', 'Bus regreso':'Bus R1', 'Manual':'' },
+    { 'Código':'U004', 'Turno':'Tópico 12:00 AM-1:00 AM', 'Bus ida':'Bus 1', 'Bus regreso':'Bus R2', 'Manual':'' },
+    { 'Código':'U005', 'Turno':'Guardarropa 10:30 PM-11:00 PM', 'Bus ida':'Bus 2', 'Bus regreso':'Bus R1', 'Manual':'' },
+    { 'Código':'U006', 'Turno':'Escaneo Puerta 9:30 PM-10:00 PM', 'Bus ida':'Bus 1', 'Bus regreso':'Bus R1', 'Manual':'' },
+  ]
+};
+document.getElementById('cfgViaje').textContent = DATA.config.viaje;
+document.getElementById('cfgMargen').textContent = DATA.config.margen;
+buildRows(); render(); setStatus('Preview con datos de ejemplo');
+// load(); // desactivado en preview
 </script>
 <script>lucide.createIcons();</script>
 </body>
