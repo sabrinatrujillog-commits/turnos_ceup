@@ -603,11 +603,11 @@ function downloadCSV(){
   google.script.run
     .withSuccessHandler(function(url){
       if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
-      window.open(url,'_blank');
+      setStatus('<a href="'+url+'" target="_blank" style="color:#fff;font-weight:700;text-decoration:underline">⬇ Clic aquí para descargar el Excel</a>');
     })
     .withFailureHandler(function(e){
       if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar'; lucide.createIcons(); }
-      alert('Error al generar Excel: '+(e&&e.message?e.message:e));
+      setStatus('<span style="color:#ffcccc">Error: '+(e&&e.message?e.message:String(e))+'</span>');
     })
     .generarExcel();
 }
