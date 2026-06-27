@@ -243,65 +243,6 @@ function getData() {
   };
 }
 
-// ---------- Asignar buses ----------
-// Recibe rows del cliente (igual que guardarAsignacion) para no depender de headers de la hoja
-function asignarBuses(rows) {
-  try {
-  if(!rows||!rows.length) throw new Error('ROWS vacío — no hay datos en el cliente');
-  var d = getData();
-  var cfg = d.config;
-
-  // Mapa codigo -> participante (para llega/sale del form y nota)
-  var partMap = {};
-  d.participantes.forEach(function(p){ partMap[p.codigo] = p; });
-
-  var busIda = d.buses.filter(function(b){ return b.tipo === 'ida'; }).sort(function(a,b){ return a.horaMin - b.horaMin; });
-  var busReg = d.buses.filter(function(b){ return b.tipo === 'regreso'; }).sort(function(a,b){ return a.horaMin - b.horaMin; });
-  var capIda = {}, capReg = {};
-  busIda.forEach(function(b){ capIda[b.bus] = 0; });
-  busReg.forEach(function(b){ capReg[b.bus] = 0; });
-
-  // Índice de rows para poder actualizar por código
-  var rowIdx = {};
-  rows.forEach(function(r,i){ rowIdx[r.codigo] = i; });
-
-  // Solo los que tienen turno, orden nota desc
-  var conTurno = rows.filter(function(r){ return r.turno; }).slice();
-  conTurno.sort(function(a,b){
-    var na=(a.nota==null)?-1:Number(a.nota), nb=(b.nota==null)?-1:Number(b.nota); return nb-na;
-  });
-
-  conTurno.forEach(function(r) {
-    var slot = d.turnos.filter(function(t){ return t.id === r.turno; })[0];
-    var iniMin = slot ? slot.iniMin : null;
-    var finMin = slot ? slot.finMin : null;
-    var p = partMap[r.codigo] || {};
-    var llegaPref = parseMin(p.llega);
-    var salePref  = parseMin(p.sale);
-
-    // BUS IDA: válidos = llegan a tiempo; preferir el más cercano a su hora marcada
-    var busI = '';
-    if (iniMin != null) {
-      var limite = iniMin - cfg.viaje - cfg.margen;
-      var validos = busIda.filter(function(b){ return b.horaMin <= limite && capIda[b.bus] < b.capacidad; });
-      if (validos.length) {
-        var elegido = null;
-        if (llegaPref != null) {
-          var menorDiff = null;
-          validos.forEach(function(b){
-            var diff = llegaPref - b.horaMin;
-            if (diff >= 0 && (menorDiff === null || diff < menorDiff)){ menorDiff = diff; elegido = b; }
-          });
-        }
-        if (!elegido) elegido = validos[validos.length - 1];
-        busI = elegido.bus; capIda[busI]++;
-      } else {
-        for (var i = 0; i < busIda.length; i++) {
-          if (capIda[busIda[i].bus] < busIda[i].capacidad){ busI = busIda[i].bus; capIda[busI]++; break; }
-        }
-      }
-    }
-
     // BUS REGRESO: debe salir después del fin de turno; preferir el más cercano a su hora marcada
     var busR = '';
     if (finMin != null) {
@@ -465,7 +406,6 @@ var INDEX_HTML = `<!DOCTYPE html>
     button{ font-family:'Poppins',sans-serif; font-weight:800; color:#fff; border:0; padding:10px 16px; border-radius:30px; cursor:pointer; font-size:13px; box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .05s, filter .15s; text-transform:uppercase; letter-spacing:.03em; }
     button:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
     button:hover{ filter:brightness(1.06); }
-    .b-bus{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); color:#fff; }
     .b-save{ background:linear-gradient(135deg,var(--verde),#0e8a45); }
     .b-reload{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); }
     .b-dl{ background:linear-gradient(135deg,#2d7a4f,#11A154); }
@@ -537,7 +477,6 @@ var INDEX_HTML = `<!DOCTYPE html>
       <button id="tabBuses" class="tab" onclick="setView('buses')"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Buses</button>
     </div>
     <div class="sep"></div>
-    <button class="b-bus" onclick="asigBuses()"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Asignar buses</button>
     <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
     <button class="b-dl" onclick="downloadCSV()"><i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar</button>
@@ -692,13 +631,6 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 
 // ---------- Servidor ----------
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
-function asigBuses(){
-  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(res){
-    DATA=res.data;
-    var map={}; res.asigs.forEach(function(a){ map[a.codigo]={busIda:a.busIda,busReg:a.busReg}; });
-    ROWS.forEach(function(r){ if(map[r.codigo]){ r.busIda=map[r.codigo].busIda; r.busReg=map[r.codigo].busReg; } });
-    render(); setStatus('Buses asignados y guardados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
-  }).withFailureHandler(fail).asignarBuses(ROWS); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
   var btn=document.querySelector('.b-dl');

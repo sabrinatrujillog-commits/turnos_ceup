@@ -23,7 +23,6 @@
     button{ font-family:'Poppins',sans-serif; font-weight:800; color:#fff; border:0; padding:10px 16px; border-radius:30px; cursor:pointer; font-size:13px; box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .05s, filter .15s; text-transform:uppercase; letter-spacing:.03em; }
     button:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
     button:hover{ filter:brightness(1.06); }
-    .b-bus{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); color:#fff; }
     .b-save{ background:linear-gradient(135deg,var(--verde),#0e8a45); }
     .b-reload{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); }
     .b-dl{ background:linear-gradient(135deg,#2d7a4f,#11A154); }
@@ -95,7 +94,6 @@
       <button id="tabBuses" class="tab" onclick="setView('buses')"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Buses</button>
     </div>
     <div class="sep"></div>
-    <button class="b-bus" onclick="asigBuses()"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Asignar buses</button>
     <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
     <button class="b-dl" onclick="downloadCSV()"><i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar</button>
