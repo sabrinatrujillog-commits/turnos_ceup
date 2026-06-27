@@ -394,7 +394,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .section-title{ font-family:'Kaio'; text-transform:uppercase; color:var(--azul); font-size:14px; margin:6px 0 4px; letter-spacing:.04em; }
 
     .pill{ display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:12px; margin:1px 0; }
-    .err{ background:#ffd0cc; color:#a30c04; } .warn{ background:#ffe9a8; color:#8a5b00; } .ok{ background:#fff3c0; color:#a07800; }
+    .err{ background:#ffd0cc; color:#a30c04; } .warn{ background:#ffe9a8; color:#8a5b00; } .ok{ background:#cdeed4; color:#0a7a2b; } .ok-alert{ background:#fff3c0; color:#a07800; }
     .muted{ color:#6b7a82; font-size:12px; }
     .cup-line{ display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12.5px; }
     .alert-item{ font-size:12px; padding:8px 10px; border-radius:10px; margin-bottom:7px; }
@@ -545,7 +545,7 @@ function renderCupos(al){
     return '<div class="cup-line"><span class="pill '+col+'">'+c+'/'+b.capacidad+'</span> <span>'+b.bus+'</span> <span class="muted">'+b.tipo+' '+b.hora+'</span></div>'; }).join('');
   document.getElementById('cupBuses').innerHTML=hb||'Sin buses en CAT_BUSES.'; }
 function renderAlerts(al){ document.getElementById('nalerts').textContent=al.list.length; var box=document.getElementById('alerts');
-  if(!al.list.length){ box.innerHTML='<span class="ok pill">¡Todo en orden! <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i></span>'; return; }
+  if(!al.list.length){ box.innerHTML='<span class="ok-alert pill">¡Todo en orden! <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i></span>'; return; }
   box.innerHTML=al.list.map(function(x){ var who=x.nombre?('<b>'+x.nombre+'</b>: '):''; return '<div class="alert-item '+x.t+'">'+who+x.m+'</div>'; }).join(''); }
 
 // ---------- Servidor ----------
