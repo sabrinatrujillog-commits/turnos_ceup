@@ -328,7 +328,8 @@ function asignarBuses(rows) {
 
   var out = rows.map(function(r){ return [r.codigo, r.nombre, r.nota, r.llega, r.sale, r.turno, r.busIda||'', r.busReg||'', '', r.manual?'sí':'']; });
   _escribir(out);
-  return getData();
+  // Devuelve solo los buses asignados para que el cliente parchee ROWS sin reconstruirlos
+  return rows.map(function(r){ return {codigo:r.codigo, busIda:r.busIda||'', busReg:r.busReg||''}; });
 }
 
 function _escribir(rows) {
@@ -686,7 +687,11 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 // ---------- Servidor ----------
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
 function asigBuses(){ if(!confirm('Asigna buses a todos los que ya tienen turno (orden: nota). ¿Continuar?'))return;
-  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).asignarBuses(ROWS); }
+  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(asigs){
+    var map={}; asigs.forEach(function(a){ map[a.codigo]={busIda:a.busIda,busReg:a.busReg}; });
+    ROWS.forEach(function(r){ if(map[r.codigo]){ r.busIda=map[r.codigo].busIda; r.busReg=map[r.codigo].busReg; } });
+    render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
+  }).withFailureHandler(fail).asignarBuses(ROWS); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
   var btn=document.querySelector('.b-dl');
