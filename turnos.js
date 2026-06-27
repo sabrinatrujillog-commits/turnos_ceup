@@ -244,17 +244,14 @@ function getData() {
 }
 
 // ---------- Asignar buses ----------
-function asignarBuses() {
+// Recibe rows del cliente (igual que guardarAsignacion) para no depender de headers de la hoja
+function asignarBuses(rows) {
   var d = getData();
   var cfg = d.config;
-  var asig = d.asignacion; // filas ya guardadas en ASIGNACION
 
-  // Construir mapa código -> fila actual (para preservar turno y datos)
-  var byCode = {};
-  asig.forEach(function(r) {
-    var cod = String(r['Código'] || '').trim();
-    if (cod) byCode[cod] = r;
-  });
+  // Mapa codigo -> participante (para llega/sale del form y nota)
+  var partMap = {};
+  d.participantes.forEach(function(p){ partMap[p.codigo] = p; });
 
   var busIda = d.buses.filter(function(b){ return b.tipo === 'ida'; }).sort(function(a,b){ return a.horaMin - b.horaMin; });
   var busReg = d.buses.filter(function(b){ return b.tipo === 'regreso'; }).sort(function(a,b){ return a.horaMin - b.horaMin; });
@@ -262,86 +259,75 @@ function asignarBuses() {
   busIda.forEach(function(b){ capIda[b.bus] = 0; });
   busReg.forEach(function(b){ capReg[b.bus] = 0; });
 
-  // Solo personas con turno asignado, ordenadas por nota desc
-  var personas = d.participantes.filter(function(p){ return p.vaWave && byCode[p.codigo] && byCode[p.codigo]['Turno']; });
-  personas.sort(function(a,b){
-    var na = (a.nota == null) ? -1 : a.nota, nb = (b.nota == null) ? -1 : b.nota; return nb - na;
+  // Índice de rows para poder actualizar por código
+  var rowIdx = {};
+  rows.forEach(function(r,i){ rowIdx[r.codigo] = i; });
+
+  // Solo los que tienen turno, orden nota desc
+  var conTurno = rows.filter(function(r){ return r.turno; }).slice();
+  conTurno.sort(function(a,b){
+    var na=(a.nota==null)?-1:Number(a.nota), nb=(b.nota==null)?-1:Number(b.nota); return nb-na;
   });
 
-  var res = asig.map(function(r){ return [r['Código'],r['Nombre'],r['Nota'],r['Llega'],r['Sale'],r['Turno'],r['Bus ida']||'',r['Bus regreso']||'','',r['Manual']||'']; });
-  var resIdx = {};
-  res.forEach(function(r,i){ resIdx[String(r[0]).trim()] = i; });
-
-  personas.forEach(function(p) {
-    var fila = byCode[p.codigo];
-    var turnoId = fila['Turno'];
-    var slot = d.turnos.filter(function(t){ return t.id === turnoId; })[0];
+  conTurno.forEach(function(r) {
+    var slot = d.turnos.filter(function(t){ return t.id === r.turno; })[0];
     var iniMin = slot ? slot.iniMin : null;
     var finMin = slot ? slot.finMin : null;
-    var llegaPref = parseMin(p.llega);  // hora que marcó en el form
-    var salePref  = parseMin(p.sale);   // hora que marcó en el form
+    var p = partMap[r.codigo] || {};
+    var llegaPref = parseMin(p.llega);
+    var salePref  = parseMin(p.sale);
 
-    // BUS IDA: debe llegar antes de iniMin - viaje - margen
-    // Preferimos el bus más tarde que aún cumpla, y que sea el más cercano a lo que marcaron
+    // BUS IDA: válidos = llegan a tiempo; preferir el más cercano a su hora marcada
     var busI = '';
     if (iniMin != null) {
       var limite = iniMin - cfg.viaje - cfg.margen;
-      // Buses válidos (llegan a tiempo)
       var validos = busIda.filter(function(b){ return b.horaMin <= limite && capIda[b.bus] < b.capacidad; });
       if (validos.length) {
-        // Si marcaron hora de llegada: elegir el bus más cercano (por arriba) a su preferencia sin pasarla
+        var elegido = null;
         if (llegaPref != null) {
-          // Bus más tarde que sea <= llegaPref y válido, o si no, el más tarde válido
-          var menorDiff = null, elegido = null;
+          var menorDiff = null;
           validos.forEach(function(b){
-            var diff = llegaPref - b.horaMin; // positivo = llega antes de lo que quiere (bien)
+            var diff = llegaPref - b.horaMin;
             if (diff >= 0 && (menorDiff === null || diff < menorDiff)){ menorDiff = diff; elegido = b; }
           });
-          if (!elegido) elegido = validos[validos.length - 1]; // el más tarde válido
-          busI = elegido.bus;
-        } else {
-          busI = validos[validos.length - 1].bus; // el más tarde que llega a tiempo
         }
-        capIda[busI]++;
+        if (!elegido) elegido = validos[validos.length - 1];
+        busI = elegido.bus; capIda[busI]++;
       } else {
-        // Sin bus válido: dar el primer bus con cupo (fallback)
         for (var i = 0; i < busIda.length; i++) {
           if (capIda[busIda[i].bus] < busIda[i].capacidad){ busI = busIda[i].bus; capIda[busI]++; break; }
         }
       }
     }
 
-    // BUS REGRESO: el bus que salga más cercano a la hora que marcaron (sale), después de finMin
+    // BUS REGRESO: debe salir después del fin de turno; preferir el más cercano a su hora marcada
     var busR = '';
-    var refSalida = finMin; // el bus debe salir después del fin de turno
-    if (refSalida != null) {
-      var despues = busReg.filter(function(b){ return b.horaMin >= refSalida && capReg[b.bus] < b.capacidad; });
+    if (finMin != null) {
+      var despues = busReg.filter(function(b){ return b.horaMin >= finMin && capReg[b.bus] < b.capacidad; });
       if (despues.length) {
-        // Preferir el bus más cercano a lo que marcaron
+        var bestBus = null;
         if (salePref != null) {
-          var bestDiff = null, bestBus = null;
+          var bestDiff = null;
           despues.forEach(function(b){
             var diff = Math.abs(b.horaMin - salePref);
             if (bestDiff === null || diff < bestDiff){ bestDiff = diff; bestBus = b; }
           });
-          busR = bestBus.bus;
-        } else {
-          busR = despues[0].bus; // el primero disponible después del turno
         }
-        capReg[busR]++;
+        if (!bestBus) bestBus = despues[0];
+        busR = bestBus.bus; capReg[busR]++;
       } else {
-        // Fallback: último con cupo
         for (var j = busReg.length - 1; j >= 0; j--) {
           if (capReg[busReg[j].bus] < busReg[j].capacidad){ busR = busReg[j].bus; capReg[busR]++; break; }
         }
       }
     }
 
-    var idx = resIdx[p.codigo];
-    if (idx != null) { res[idx][6] = busI; res[idx][7] = busR; }
+    rows[rowIdx[r.codigo]].busIda = busI;
+    rows[rowIdx[r.codigo]].busReg = busR;
   });
 
-  _escribir(res);
+  var out = rows.map(function(r){ return [r.codigo, r.nombre, r.nota, r.llega, r.sale, r.turno, r.busIda||'', r.busReg||'', '', r.manual?'sí':'']; });
+  _escribir(out);
   return getData();
 }
 
@@ -700,7 +686,7 @@ function renderAlerts(al){ document.getElementById('nalerts').textContent=al.lis
 // ---------- Servidor ----------
 function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; setStatus('Guardado <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).guardarAsignacion(ROWS); }
 function asigBuses(){ if(!confirm('Asigna buses a todos los que ya tienen turno (orden: nota). ¿Continuar?'))return;
-  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).asignarBuses(); }
+  setStatus('Asignando buses…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('Buses asignados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>'); }).withFailureHandler(fail).asignarBuses(ROWS); }
 function setStatus(s){ document.getElementById('status').innerHTML=s; lucide.createIcons(); }
 function downloadCSV(){
   var btn=document.querySelector('.b-dl');
