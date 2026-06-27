@@ -352,6 +352,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .b-auto{ background:linear-gradient(135deg,var(--naranja),var(--amarillo)); color:var(--teal); }
     .b-save{ background:linear-gradient(135deg,var(--verde),#0e8a45); }
     .b-reload{ background:linear-gradient(135deg,var(--azul),var(--azulclaro)); }
+    .b-dl{ background:linear-gradient(135deg,#2d7a4f,#11A154); }
     button:disabled{ opacity:.5; }
     .chip{ background:var(--crema); border:2px solid var(--teal); border-radius:20px; padding:5px 12px; font-size:12px; font-weight:700; }
     #status{ font-weight:800; color:var(--verde); font-size:13px; }
@@ -423,6 +424,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     <button class="b-auto" onclick="auto()"><i data-lucide="zap" style="width:15px;height:15px;vertical-align:middle"></i> Auto-sugerir</button>
     <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
+    <button class="b-dl" onclick="downloadCSV()"><i data-lucide="download" style="width:15px;height:15px;vertical-align:middle"></i> Descargar</button>
     <span id="status" style="margin-left:auto"></span>
   </div>
 
@@ -577,6 +579,13 @@ function save(){ setStatus('Guardando…'); google.script.run.withSuccessHandler
 function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia automática (orden: nota → preferencia). ¿Continuar?'))return;
   setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
 function setStatus(s){ document.getElementById('status').textContent=s; }
+function downloadCSV(){
+  var rows=[['Nombre','Turno','Bus ida','Bus regreso']];
+  ROWS.forEach(function(r){ rows.push([r.nombre, r.turno||'–', r.busIda||'–', r.busReg||'–']); });
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.csv'; a.click();
+}
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
 load();
