@@ -478,7 +478,8 @@ function load(){ setStatus('Cargando…');
       DATA=d;
       document.getElementById('cfgViaje').textContent=d.config.viaje;
       document.getElementById('cfgMargen').textContent=d.config.margen;
-      buildRows(); render(); setStatus('Datos cargados <i data-lucide="check" style="width:15px;height:15px;vertical-align:middle"></i>');
+      buildRows(); render();
+      setStatus('p:'+d.participantes.length+' vaWave:'+d.participantes.filter(function(p){return p.vaWave;}).length+' t:'+d.turnos.length+' asig:'+d.asignacion.length);
     } catch(e){ setStatus('<span style="color:red">ERROR JS: '+e.message+'</span>'); }
   }).withFailureHandler(fail).getData(); }
 
