@@ -256,11 +256,33 @@ function auto(){ if(!confirm('Reemplaza la asignación actual con una sugerencia
   setStatus('Calculando…'); google.script.run.withSuccessHandler(function(d){ DATA=d; buildRows(); render(); setStatus('¡Sugerencia lista! Revisa y guarda.'); }).withFailureHandler(fail).autoAsignar(); }
 function setStatus(s){ document.getElementById('status').textContent=s; }
 function downloadCSV(){
-  var rows=[['Nombre','Turno','Bus ida','Bus regreso']];
-  ROWS.forEach(function(r){ rows.push([r.nombre, r.turno||'–', r.busIda||'–', r.busReg||'–']); });
-  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.csv'; a.click();
+  var byTurno={}, order=[];
+  ROWS.forEach(function(r){
+    var t=r.turno||'Sin turno';
+    if(!byTurno[t]){byTurno[t]=[];order.push(t);}
+    byTurno[t].push(r);
+  });
+  var style='<style>body{font-family:Arial,sans-serif;font-size:11pt}'+
+    'h2{background:#0844A7;color:#fff;padding:6px 10px;margin:18px 0 4px}'+
+    'table{border-collapse:collapse;width:100%}'+
+    'th{background:#022B3A;color:#fff;padding:6px 10px;text-align:left;font-size:10pt}'+
+    'td{padding:5px 10px;border-bottom:1px solid #ddd}'+
+    'tr:nth-child(even) td{background:#f4f8ff}</style>';
+  var html='<html><head><meta charset="utf-8">'+style+'</head><body>';
+  html+='<h1 style="color:#0844A7;font-size:16pt;margin-bottom:4px">Asignaciones WAVE</h1>';
+  order.forEach(function(turno){
+    var slot=slotById(turno);
+    var hora=slot?(slot.inicio+' – '+slot.fin):'';
+    html+='<h2>'+turno+(hora?' &nbsp;·&nbsp; <span style="font-weight:normal;font-size:10pt">'+hora+'</span>':'')+'</h2>';
+    html+='<table><tr><th>Nombre</th><th>Bus ida</th><th>Bus regreso</th></tr>';
+    byTurno[turno].forEach(function(r){
+      html+='<tr><td>'+r.nombre+'</td><td>'+(r.busIda||'–')+'</td><td>'+(r.busReg||'–')+'</td></tr>';
+    });
+    html+='</table>';
+  });
+  html+='</body></html>';
+  var blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='asignacion_wave.xls'; a.click();
 }
 function fail(e){ setStatus(''); alert('Error: '+(e&&e.message?e.message:e)); }
 
