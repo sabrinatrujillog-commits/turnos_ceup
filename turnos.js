@@ -374,6 +374,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .card.t-red h3{ color:#c49000 !important; }
     .card.t-org{ border-color:#F17121; border-top-color:#F17121; background:#fff; }
     .card.t-org h3{ color:#F17121 !important; }
+    .card.t-org .pchip{ color:#F17121; border-color:#F17121; background:#fff3ec; }
     .card h3{ font-size:16px; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
     .card h3 small{ font-family:'Poppins'; font-weight:700; text-transform:none; color:var(--azul); font-size:12px; margin-left:auto; }
 
@@ -528,7 +529,7 @@ function renderBuses(al){
     return h; }
   var html='<div class="card t-org"><h3><span class="emoji"><i data-lucide="arrow-right" style="width:15px;height:15px;vertical-align:middle"></i></span> Buses de ida</h3>'+
     (ida.length?block(ida,'busIda'):'<div class="muted">Sin buses de ida en CAT_BUSES.</div>')+'</div>';
-  html+='<div class="card t-grn"><h3><span class="emoji"><i data-lucide="arrow-left" style="width:15px;height:15px;vertical-align:middle"></i></span> Buses de regreso</h3>'+
+  html+='<div class="card t-org"><h3><span class="emoji"><i data-lucide="arrow-left" style="width:15px;height:15px;vertical-align:middle"></i></span> Buses de regreso</h3>'+
     (reg.length?block(reg,'busReg'):'<div class="muted">Sin buses de regreso en CAT_BUSES.</div>')+'</div>';
   return html;
 }
