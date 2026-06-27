@@ -408,14 +408,13 @@ var INDEX_HTML = `<!DOCTYPE html>
     <button class="b-auto" onclick="auto()"><i data-lucide="zap" style="width:15px;height:15px;vertical-align:middle"></i> Auto-sugerir</button>
     <button class="b-save" onclick="save()"><i data-lucide="save" style="width:15px;height:15px;vertical-align:middle"></i> Guardar</button>
     <button class="b-reload" onclick="load()">↻ Recargar</button>
-    <span class="chip"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i> Viaje <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:15px;height:15px;vertical-align:middle"></i> Margen <b id="cfgMargen">–</b>m</span>
     <span id="status" style="margin-left:auto"></span>
   </div>
 
   <div class="wrap">
     <div class="main" id="mainView"></div>
     <div class="side">
-      <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus</h3><div id="cupBuses" class="muted">–</div></div>
+      <div class="card t-grn"><h3><span class="emoji"><i data-lucide="bus" style="width:15px;height:15px;vertical-align:middle"></i></span> Cupos por bus <small style="font-family:'Poppins';font-weight:700;font-size:11px;margin-left:auto;color:var(--teal);background:var(--crema);border:1.5px solid var(--teal);border-radius:20px;padding:2px 8px;"><i data-lucide="bus" style="width:11px;height:11px;vertical-align:middle"></i> <b id="cfgViaje">–</b>m · <i data-lucide="timer" style="width:11px;height:11px;vertical-align:middle"></i> <b id="cfgMargen">–</b>m</small></h3><div id="cupBuses" class="muted">–</div></div>
       <div class="card t-red"><h3><span class="emoji"><i data-lucide="alert-triangle" style="width:15px;height:15px;vertical-align:middle"></i></span> Alertas (<span id="nalerts">0</span>)</h3><div id="alerts" class="muted">Sin alertas.</div></div>
     </div>
   </div>
