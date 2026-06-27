@@ -339,7 +339,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     body{ font-family:'Poppins',sans-serif; margin:0; color:var(--teal); background:var(--crema); }
     h1,h2,h3{ font-family:'Kaio',sans-serif; text-transform:uppercase; letter-spacing:.02em; margin:0; }
     .banner{ width:100%; display:block; }
-    .bunting2{ height:14px; background:repeating-linear-gradient(90deg, var(--rojo) 0 6.66%, var(--amarillo) 6.66% 13.33%, var(--azul) 13.33% 20%, var(--verde) 20% 26.66%, var(--naranja) 26.66% 33.33%); clip-path: polygon(0 0,3% 0,3% 70%,6% 70%,6% 0,9% 0,9% 70%,12% 70%,12% 0,15% 0,15% 70%,18% 70%,18% 0,21% 0,21% 70%,24% 70%,24% 0,27% 0,27% 70%,30% 70%,30% 0,33% 0,33% 70%,36% 70%,36% 0,39% 0,39% 70%,42% 70%,42% 0,45% 0,45% 70%,48% 70%,48% 0,51% 0,51% 70%,54% 70%,54% 0,57% 0,57% 70%,60% 70%,60% 0,63% 0,63% 70%,66% 70%,66% 0,69% 0,69% 70%,72% 70%,72% 0,75% 0,75% 70%,78% 70%,78% 0,81% 0,81% 70%,84% 70%,84% 0,87% 0,87% 70%,90% 70%,90% 0,93% 0,93% 70%,96% 70%,96% 0,100% 0,100% 100%,0 100%); }
+    .bunting2{ display:none; }
 
     .bar{ display:flex; gap:10px; align-items:center; padding:12px 18px; background:#fff; border-bottom:3px solid var(--amarillo); flex-wrap:wrap; }
     button{ font-family:'Poppins',sans-serif; font-weight:800; color:#fff; border:0; padding:10px 16px; border-radius:30px; cursor:pointer; font-size:13px; box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .05s, filter .15s; text-transform:uppercase; letter-spacing:.03em; }
