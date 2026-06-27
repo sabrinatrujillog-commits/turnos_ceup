@@ -365,7 +365,7 @@ var INDEX_HTML = `<!DOCTYPE html>
     .wrap{ display:flex; gap:14px; padding:16px 18px; align-items:flex-start; }
     .main{ flex:1; min-width:0; }
     .side{ width:300px; flex-shrink:0; }
-    .card{ background:#fff; border-radius:14px; box-shadow:0 4px 14px rgba(2,43,58,.12); padding:14px; margin-bottom:14px; border-top:6px solid var(--azul); }
+    .card{ background:#fff; border-radius:14px; box-shadow:0 4px 14px rgba(2,43,58,.12); padding:14px; margin-bottom:14px; border-top:6px solid var(--azul); border:1px solid rgba(2,43,58,.1); border-top:6px solid var(--azul); }
     .card.t-yel{ border-top-color:var(--amarillo); background:#fffbee; }
     .card.t-grn{ border-top-color:var(--verde); background:#f0faf4; }
     .card.t-red{ border-top-color:var(--naranja); background:#fff7f0; }
