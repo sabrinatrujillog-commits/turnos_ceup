@@ -110,7 +110,7 @@ function _sheetObjects(name) {
     for (var j = 0; j < headers.length; j++) {
       var v = values[i][j];
       // Convertir Date a string para que sea serializable por google.script.run
-      if (v instanceof Date) v = Utilities.formatDate(v, Session.getScriptTimeZone(), 'h:mm a');
+      if (v instanceof Date) v = Utilities.formatDate(v, Session.getScriptTimeZone(), 'HH:mm');
       row[headers[j]] = v;
       if (v !== '' && v != null) hasData = true;
     }
