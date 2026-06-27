@@ -164,7 +164,7 @@ function tip(byP,cod){ var a=byP[cod]||[]; return a.map(function(x){return x.m;}
 // ---------- Render principal ----------
 function render(){ var al=validate();
   document.getElementById('mainView').innerHTML = (VIEW==='turnos') ? renderTurnos(al) : renderBuses(al);
-  renderCupos(al); renderAlerts(al); }
+  renderCupos(al); renderAlerts(al); lucide.createIcons(); }
 
 function availSelect(filterFn, onchangeCall){
   var opts='<option value="">+ asignar…</option>';
